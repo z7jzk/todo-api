@@ -8,7 +8,8 @@
     "async": "~0.2.8",
     "body-parser": "^1.13.3",
     "express": "^4.13.3",
-    "socket.io": "~0.9.14"
+    "socket.io": "~0.9.14",
+    "underscore": "^1.8.3"
   },
   "scripts": {
     "start": "node server.js"
