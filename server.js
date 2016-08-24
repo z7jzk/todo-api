@@ -5,6 +5,7 @@ var todos = [];
 var todoNextId = 1;
 var bodyParser = require('body-parser');
 var _ = require('underscore');
+var db = require('./db.js');
 
 app.use(bodyParser.json());
 
@@ -55,13 +56,20 @@ app.post('/todos', function (req, res) {
   
   body.description = body.description.trim();
   
-  // add id field
-  body.id = todoNextId++;
+  // post data to the db
+  db.todo.create(body).then(function (todo) {
+      res.json(todo.toJSON());
+    }, function (e) {
+      res.status(400).json(e);
+  });
   
-  // push body in to the array
-  todos.push(body);
+  // // add id field
+  // body.id = todoNextId++;
   
-  res.json(body);
+  // // push body in to the array
+  // todos.push(body);
+  
+  // res.json(body);
 });
 
 // DELETE todos
@@ -107,6 +115,8 @@ app.put('/todos/:id', function (req, res) {
   
 });
 
-app.listen(PORT, function () {
-  console.log('Express listening on port ' + PORT + '!');
-})
+db.sequelize.sync().then(function () {
+  app.listen(PORT, function () {
+    console.log('Express listening on port ' + PORT + '!');
+  });
+});
