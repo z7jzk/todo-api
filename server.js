@@ -36,13 +36,16 @@ app.get('/todos', function (req, res) {
 // GET /todos/:id
 app.get('/todos/:id', function (req, res) {
   var todoId = parseInt(req.params.id, 10);
-  var item = _.findWhere(todos, {id: todoId});
   
-  if (item) {
-    res.json(item);
-  } else {
-    res.status(404).send();
-  }
+  db.todo.findById(todoId).then(function (todo) {
+    if (!!todo) {
+      res.json(todo.toJSON());
+    } else {
+      res.status(404).send();
+    }
+  }, function (e) {
+    res.status(500).send();
+  });
 });
 
 // POST todos
@@ -62,14 +65,6 @@ app.post('/todos', function (req, res) {
     }, function (e) {
       res.status(400).json(e);
   });
-  
-  // // add id field
-  // body.id = todoNextId++;
-  
-  // // push body in to the array
-  // todos.push(body);
-  
-  // res.json(body);
 });
 
 // DELETE todos
